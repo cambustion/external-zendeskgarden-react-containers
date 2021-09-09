@@ -5,8 +5,10 @@
  * found at http://www.apache.org/licenses/LICENSE-2.0.
  */
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useGrid, GridContainer, IUseGridReturnValue } from './src';
+import { useTooltip } from '../tooltip/src';
+import { composeEventHandlers } from '../utilities/src/index';
 
 const ARGS = {
   wrap: true,
@@ -30,34 +32,80 @@ const convertToMatrix = (array, columnCount) =>
     return acc;
   }, []);
 
-const Grid = ({ rtl, matrix, selection, selectedRowIndex, selectedColIndex, getGridCellProps }) => (
-  <table role="grid" style={{ direction: rtl ? 'rtl' : 'ltr' }}>
-    <tbody>
-      {matrix.map((row, rowIdx) => (
-        <tr key={`rowIdx-${row[0]}`}>
-          {row.map((item, colIdx) => {
-            const selected = rowIdx === selectedRowIndex && colIdx === selectedColIndex;
+const Tooltip = ({ children }) => {
+  const tooltipRef = useRef(null);
 
-            return (
-              <td role="presentation" key={item}>
-                <button
-                  {...getGridCellProps({
-                    rowIdx,
-                    colIdx,
-                    'aria-label': `cell ${rowIdx}, ${colIdx}`,
-                    style: { width: 30, height: 30 }
-                  })}
-                >
-                  {selection && selected ? '✓' : null}
-                </button>
-              </td>
-            );
-          })}
-        </tr>
-      ))}
-    </tbody>
-  </table>
-);
+  const { isVisible, getTooltipProps, getTriggerProps } = useTooltip({
+    delayMilliseconds: 500
+  });
+
+  const styles: React.CSSProperties = {
+    visibility: isVisible ? 'visible' : 'hidden',
+    background: '#1f73b7',
+    padding: '10px',
+    margin: '6px 0',
+    color: '#fff'
+  };
+
+  // console.log(children.props.onClick)
+
+  const tooltipTriggerProps = getTriggerProps();
+
+  const composedOnKeyDown = composeEventHandlers(
+    children.props.onKeyDown,
+    tooltipTriggerProps.onKeyDown
+  );
+
+  return (
+    <>
+      {React.cloneElement(children, {
+        ...tooltipTriggerProps,
+        onKeyDown: composedOnKeyDown
+      })}
+      <div
+        {...getTooltipProps({
+          ref: tooltipRef,
+          style: styles
+        })}
+      >
+        Tooltip
+      </div>
+    </>
+  );
+};
+
+const Grid = ({ rtl, matrix, selection, selectedRowIndex, selectedColIndex, getGridCellProps }) => {
+  return (
+    <table role="grid" style={{ direction: rtl ? 'rtl' : 'ltr' }}>
+      <tbody>
+        {matrix.map((row, rowIdx) => (
+          <tr key={`rowIdx-${row[0]}`}>
+            {row.map((item, colIdx) => {
+              const selected = rowIdx === selectedRowIndex && colIdx === selectedColIndex;
+
+              return (
+                <td role="presentation" key={item}>
+                  <Tooltip>
+                    <button
+                      {...getGridCellProps({
+                        rowIdx,
+                        colIdx,
+                        'aria-label': `cell ${rowIdx}, ${colIdx}`,
+                        style: { width: 30, height: 30 }
+                      })}
+                    >
+                      {selection && selected ? '✓' : null}
+                    </button>
+                  </Tooltip>
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
 
 export const Container = ({ rtl, wrap, selection, cellCount }) => {
   const items = Array(cellCount)
