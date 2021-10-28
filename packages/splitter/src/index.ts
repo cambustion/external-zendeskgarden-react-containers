@@ -6,8 +6,8 @@
  */
 
 /* Hooks */
-export { useSplitter } from './useSplitter';
-export type {
+export {
+  useSplitter,
   IUseSplitterProps,
   IUseSplitterReturnValue,
   SplitterOrientation,
@@ -15,5 +15,4 @@ export type {
 } from './useSplitter';
 
 /* Render-props */
-export { SplitterContainer } from './SplitterContainer';
-export type { ISplitterContainerProps } from './SplitterContainer';
+export { SplitterContainer, ISplitterContainerProps } from './SplitterContainer';
