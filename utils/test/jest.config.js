@@ -6,14 +6,12 @@
  */
 
 const path = require('path');
-const { defaults } = require('jest-config');
 
 module.exports = {
   testEnvironment: 'jsdom',
   rootDir: '../../',
   preset: 'ts-jest/presets/js-with-babel',
   modulePathIgnorePatterns: ['./node_modules'],
-  resolver: path.resolve(__dirname, 'jest.resolver.js'),
   transform: {
     '^.+\\.js$': 'babel-jest'
   },
@@ -23,7 +21,6 @@ module.exports = {
       tsconfig: path.resolve(__dirname, 'tsconfig.test.json')
     }
   },
-  moduleFileExtensions: [...defaults.moduleFileExtensions],
   setupFilesAfterEnv: ['<rootDir>/utils/test/jest.setup.js'],
   moduleNameMapper: {
     'garden-test-utils': '<rootDir>/utils/test/utilities.ts'
