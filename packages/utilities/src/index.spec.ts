@@ -9,7 +9,7 @@ import * as utils from '.';
 
 describe('utils', () => {
   test('utils exports', () => {
-    expect(Object.keys(utils)).toEqual([
+    expect(Object.keys(utils)).toStrictEqual([
       'composeEventHandlers',
       'generateId',
       'setIdCounter',
