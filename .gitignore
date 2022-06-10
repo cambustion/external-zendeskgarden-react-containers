@@ -1,6 +1,7 @@
 # General ignores
 .env
 node_modules
+node_modules.hidden
 utils/storybook/coverage
 *.log
 
