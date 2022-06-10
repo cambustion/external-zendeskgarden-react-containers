@@ -4,10 +4,10 @@
     "rootDir": "src",
     "declarationDir": "dist/typings",
     "declaration": true,
-    "sourceMap": false,
+    "declarationMap": true,
+    "sourceMap": true,
     "noEmit": false,
     "paths": {}
-
   },
   "include": ["src/**/*"],
   "exclude": ["**/*.spec.tsx", "**/*.spec.ts"]
